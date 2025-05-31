@@ -1,0 +1,24 @@
+{
+  "name": "hive",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EndlessEndless1999/hive.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EndlessEndless1999/hive/issues"
+  },
+  "homepage": "https://github.com/EndlessEndless1999/hive#readme",
+  "description": "",
+  "dependencies": {
+    "commander": "^14.0.0",
+    "figlet": "^1.8.1"
+  }
+}
