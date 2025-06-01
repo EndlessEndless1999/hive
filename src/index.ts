@@ -11,7 +11,7 @@ const path = require("path");
 const { execSync } = require('child_process');
 // For getting filepaths
 
-import { select, Separator } from '@inquirer/prompts';
+import { number, select, Separator } from '@inquirer/prompts';
 
 
 const program = new Command();
@@ -33,6 +33,7 @@ const options = program.opts();
 console.log(figlet.textSync("Hive - Audio Cave"));
 
 
+let projects = [];
 
 // In the first line, we import the Figlet module. 
 // Next, we invoke the figlet.textSync() method with the string Dir Manager as the argument 
@@ -73,10 +74,15 @@ function createFile(filepath: string) {
   console.log("An empty file has been created");
 }
 
-async function displayMenu() {
+async function displayMenu(choices: any, message: string){
     const answer = await select({
-  message: 'Make a choice',
-  choices: [
+        message: message,
+        choices: choices
+    });
+    return answer;
+}
+
+let menuChoices = [
     {
       name: 'Select Project',
       value: 0,
@@ -92,14 +98,7 @@ async function displayMenu() {
       value: 2,
       description: 'Add Existing Project to Hive',
     },
-  ],
-});
-
-
-
-    return answer;
-}
-
+  ]
 
 
 if (options.ls) {
@@ -118,20 +117,23 @@ if (options.touch) {
 
 async function startUp() {
     if (!process.argv.slice(2).length) {
-        let result = await displayMenu();
+        let result = await displayMenu(menuChoices, 'Make a choice');
 
         executeOption(result);
     }
 }
 
-function executeOption(result: number) {
+function executeOption(result: any) {
     switch (result) {
         case 0:
             viewProjects();
+            break
         case 1:
             createProject();
+            break
         case 2:
             addProject();
+            break
     }
 
 
@@ -140,6 +142,21 @@ function executeOption(result: number) {
 }
 
 function viewProjects() {
+    if (projects.length == 0) {
+        console.log("You haven't defined any projects.")
+        startUp();
+        return 
+    }
+    let choices = [];
+    for (let i = 0; i > projects.length; i++) {
+        choices.push({
+            "name": `Project ${i}`,
+            "value": i
+        })
+    }
+    // Add each project as a choice in a list 
+
+
     // Display a list of currently stored projects 
 
     // Be able to choose one to open 
@@ -163,6 +180,10 @@ function addProject() {
     const result = execSync(`osascript -e '${script}'`, { encoding: 'utf8' });
     const directoryPath = result.trim();
     console.log("Selected directory:", directoryPath);
+
+    projects.push(directoryPath);
+
+
     return directoryPath;
 
 

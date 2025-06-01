@@ -31,6 +31,7 @@ const options = program.opts();
 // Gets options from command object 
 // Defines Options, Versions
 console.log(figlet.textSync("Hive - Audio Cave"));
+let projects = [];
 // In the first line, we import the Figlet module. 
 // Next, we invoke the figlet.textSync() method with the string Dir Manager as the argument 
 // to turn the text into ASCII Art. Finally, we log the text in the console.
@@ -62,31 +63,32 @@ function createFile(filepath) {
     fs.openSync(filepath, "w");
     console.log("An empty file has been created");
 }
-function displayMenu() {
+function displayMenu(choices, message) {
     return __awaiter(this, void 0, void 0, function* () {
         const answer = yield (0, prompts_1.select)({
-            message: 'Make a choice',
-            choices: [
-                {
-                    name: 'Select Project',
-                    value: 0,
-                    description: 'Continue Working on a Project',
-                },
-                {
-                    name: 'Create Project',
-                    value: 1,
-                    description: 'Start a New Project',
-                },
-                {
-                    name: 'Add Project',
-                    value: 2,
-                    description: 'Add Existing Project to Hive',
-                },
-            ],
+            message: message,
+            choices: choices
         });
         return answer;
     });
 }
+let menuChoices = [
+    {
+        name: 'Select Project',
+        value: 0,
+        description: 'Continue Working on a Project',
+    },
+    {
+        name: 'Create Project',
+        value: 1,
+        description: 'Start a New Project',
+    },
+    {
+        name: 'Add Project',
+        value: 2,
+        description: 'Add Existing Project to Hive',
+    },
+];
 if (options.ls) {
     const filepath = typeof options.ls === "string" ? options.ls : __dirname;
     listDirContents(filepath);
@@ -100,7 +102,7 @@ if (options.touch) {
 function startUp() {
     return __awaiter(this, void 0, void 0, function* () {
         if (!process.argv.slice(2).length) {
-            let result = yield displayMenu();
+            let result = yield displayMenu(menuChoices, 'Make a choice');
             executeOption(result);
         }
     });
@@ -109,13 +111,29 @@ function executeOption(result) {
     switch (result) {
         case 0:
             viewProjects();
+            break;
         case 1:
             createProject();
+            break;
         case 2:
             addProject();
+            break;
     }
 }
 function viewProjects() {
+    if (projects.length == 0) {
+        console.log("You haven't defined any projects.");
+        startUp();
+        return;
+    }
+    let choices = [];
+    for (let i = 0; i > projects.length; i++) {
+        choices.push({
+            "name": `Project ${i}`,
+            "value": i
+        });
+    }
+    // Add each project as a choice in a list 
     // Display a list of currently stored projects 
     // Be able to choose one to open 
 }
@@ -131,12 +149,14 @@ function addProject() {
         const result = execSync(`osascript -e '${script}'`, { encoding: 'utf8' });
         const directoryPath = result.trim();
         console.log("Selected directory:", directoryPath);
+        projects.push(directoryPath);
         return directoryPath;
     }
     catch (error) {
         console.error("Directory selection canceled or failed:");
         return null;
     }
+    // uses apple script to open a dialog box to select a directory
 }
 function initialiseHive() {
     return __awaiter(this, void 0, void 0, function* () {
