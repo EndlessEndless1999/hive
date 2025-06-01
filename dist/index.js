@@ -16,6 +16,8 @@ const fs = require("fs");
 // FileSystem
 const path = require("path");
 // Path 
+const { execSync } = require('child_process');
+// For getting filepaths
 const prompts_1 = require("@inquirer/prompts");
 const program = new Command();
 program
@@ -63,28 +65,22 @@ function createFile(filepath) {
 function displayMenu() {
     return __awaiter(this, void 0, void 0, function* () {
         const answer = yield (0, prompts_1.select)({
-            message: 'Select a package manager',
+            message: 'Make a choice',
             choices: [
                 {
-                    name: 'npm',
-                    value: 'npm',
-                    description: 'npm is the most popular package manager',
+                    name: 'Select Project',
+                    value: 0,
+                    description: 'Continue Working on a Project',
                 },
                 {
-                    name: 'yarn',
-                    value: 'yarn',
-                    description: 'yarn is an awesome package manager',
-                },
-                new prompts_1.Separator(),
-                {
-                    name: 'jspm',
-                    value: 'jspm',
-                    disabled: true,
+                    name: 'Create Project',
+                    value: 1,
+                    description: 'Start a New Project',
                 },
                 {
-                    name: 'pnpm',
-                    value: 'pnpm',
-                    disabled: '(pnpm is not available)',
+                    name: 'Add Project',
+                    value: 2,
+                    description: 'Add Existing Project to Hive',
                 },
             ],
         });
@@ -101,7 +97,51 @@ if (options.mkdir) {
 if (options.touch) {
     createFile(path.resolve(__dirname, options.touch));
 }
-if (!process.argv.slice(2).length) {
-    let result = displayMenu();
+function startUp() {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!process.argv.slice(2).length) {
+            let result = yield displayMenu();
+            executeOption(result);
+        }
+    });
 }
+function executeOption(result) {
+    switch (result) {
+        case 0:
+            viewProjects();
+        case 1:
+            createProject();
+        case 2:
+            addProject();
+    }
+}
+function viewProjects() {
+    // Display a list of currently stored projects 
+    // Be able to choose one to open 
+}
+function createProject() {
+    // Create a new project in a chosen directory 
+}
+function addProject() {
+    try {
+        const script = `
+      set chosenFolder to POSIX path of (choose folder with prompt "Select a directory")
+      return chosenFolder
+    `;
+        const result = execSync(`osascript -e '${script}'`, { encoding: 'utf8' });
+        const directoryPath = result.trim();
+        console.log("Selected directory:", directoryPath);
+        return directoryPath;
+    }
+    catch (error) {
+        console.error("Directory selection canceled or failed:");
+        return null;
+    }
+}
+function initialiseHive() {
+    return __awaiter(this, void 0, void 0, function* () {
+    });
+}
+startUp();
+initialiseHive();
 //# sourceMappingURL=index.js.map

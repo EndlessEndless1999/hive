@@ -8,6 +8,8 @@ const fs = require("fs");
 // FileSystem
 const path = require("path");
 // Path 
+const { execSync } = require('child_process');
+// For getting filepaths
 
 import { select, Separator } from '@inquirer/prompts';
 
@@ -73,28 +75,22 @@ function createFile(filepath: string) {
 
 async function displayMenu() {
     const answer = await select({
-  message: 'Select a package manager',
+  message: 'Make a choice',
   choices: [
     {
-      name: 'npm',
-      value: 'npm',
-      description: 'npm is the most popular package manager',
+      name: 'Select Project',
+      value: 0,
+      description: 'Continue Working on a Project',
     },
     {
-      name: 'yarn',
-      value: 'yarn',
-      description: 'yarn is an awesome package manager',
-    },
-    new Separator(),
-    {
-      name: 'jspm',
-      value: 'jspm',
-      disabled: true,
+      name: 'Create Project',
+      value: 1,
+      description: 'Start a New Project',
     },
     {
-      name: 'pnpm',
-      value: 'pnpm',
-      disabled: '(pnpm is not available)',
+      name: 'Add Project',
+      value: 2,
+      description: 'Add Existing Project to Hive',
     },
   ],
 });
@@ -120,7 +116,72 @@ if (options.touch) {
   createFile(path.resolve(__dirname, options.touch));
 }
 
-if (!process.argv.slice(2).length) {
-  let result = displayMenu();
+async function startUp() {
+    if (!process.argv.slice(2).length) {
+        let result = await displayMenu();
+
+        executeOption(result);
+    }
 }
 
+function executeOption(result: number) {
+    switch (result) {
+        case 0:
+            viewProjects();
+        case 1:
+            createProject();
+        case 2:
+            addProject();
+    }
+
+
+
+
+}
+
+function viewProjects() {
+    // Display a list of currently stored projects 
+
+    // Be able to choose one to open 
+
+
+}
+
+function createProject() {
+    // Create a new project in a chosen directory 
+
+}
+
+function addProject() {
+  try {
+
+    const script = `
+      set chosenFolder to POSIX path of (choose folder with prompt "Select a directory")
+      return chosenFolder
+    `;
+
+    const result = execSync(`osascript -e '${script}'`, { encoding: 'utf8' });
+    const directoryPath = result.trim();
+    console.log("Selected directory:", directoryPath);
+    return directoryPath;
+
+
+  } 
+  catch (error) {
+
+    console.error("Directory selection canceled or failed:");
+    return null;
+
+  }
+
+  // uses apple script to open a dialog box to select a directory
+}
+
+
+
+async function initialiseHive() {
+
+}
+
+startUp();
+initialiseHive();
