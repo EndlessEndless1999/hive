@@ -1,0 +1,29 @@
+{
+  "myObject": {
+    "menuChoices": [
+      {
+        "name": "Select Project",
+        "value": 0,
+        "description": "Continue Working on a Project"
+      },
+      {
+        "name": "Create Project",
+        "value": 1,
+        "description": "Start a New Project"
+      },
+      {
+        "name": "Add Project",
+        "value": 2,
+        "description": "Add Existing Project to Hive"
+      }
+    ],
+    "projects": [
+      {
+        "name": "Album 1",
+        "path": "/Users/charkie/Desktop/New_Music/"
+      }
+    ],
+    "tracks": [],
+    "settings": []
+  }
+}

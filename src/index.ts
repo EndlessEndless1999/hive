@@ -11,7 +11,7 @@ const path = require("path");
 const { execSync } = require('child_process');
 // For getting filepaths
 
-import { number, select, Separator } from '@inquirer/prompts';
+import { number, select, Separator, input } from '@inquirer/prompts';
 
 
 const program = new Command();
@@ -82,23 +82,7 @@ async function displayMenu(choices: any, message: string){
     return answer;
 }
 
-let menuChoices = [
-    {
-      name: 'Select Project',
-      value: 0,
-      description: 'Continue Working on a Project',
-    },
-    {
-      name: 'Create Project',
-      value: 1,
-      description: 'Start a New Project',
-    },
-    {
-      name: 'Add Project',
-      value: 2,
-      description: 'Add Existing Project to Hive',
-    },
-  ]
+let menuChoices: any;
 
 
 if (options.ls) {
@@ -177,10 +161,23 @@ function createProject() {
 
 }
 
-function addProject() {
+async function addProject() {
     const directoryPath = getPath();
 
-    projects.push(directoryPath);
+    const name = await input({message: "Enter the name of your project"});
+
+    const data = {
+      name: name,
+      path: directoryPath
+    }
+
+    const obj = getJSON();
+
+    obj.projects.push(data);
+
+    setJSON(obj);
+
+    
 
     startUp();
 }
@@ -218,7 +215,33 @@ function getPath() {
 
 async function initialiseHive() {
 
+  
+  const myObject = getJSON();
+
+  menuChoices = myObject.myObject.menuChoices;
+  projects = myObject.myObject.projects;
+
+
 }
 
-startUp();
+function getJSON() {
+  var data = fs.readFileSync("data.json");
+  var myObject = JSON.parse(data);
+
+  return myObject
+}
+
+function setJSON(myObject: any) {
+  // STRINGIFY OBJECT 
+  const jsonObj = JSON.stringify({myObject}, null, 2);
+
+  fs.writeFileSync('data.json', jsonObj, 'utf8');
+
+
+
+  // WRITE TO FILE 
+}
+
 initialiseHive();
+
+startUp();

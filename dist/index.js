@@ -72,23 +72,7 @@ function displayMenu(choices, message) {
         return answer;
     });
 }
-let menuChoices = [
-    {
-        name: 'Select Project',
-        value: 0,
-        description: 'Continue Working on a Project',
-    },
-    {
-        name: 'Create Project',
-        value: 1,
-        description: 'Start a New Project',
-    },
-    {
-        name: 'Add Project',
-        value: 2,
-        description: 'Add Existing Project to Hive',
-    },
-];
+let menuChoices;
 if (options.ls) {
     const filepath = typeof options.ls === "string" ? options.ls : __dirname;
     listDirContents(filepath);
@@ -135,7 +119,6 @@ function viewProjects() {
                 description: 'Continue Working on a Project'
             });
         }
-        console.log(choices);
         const answer = yield (0, prompts_1.select)({
             message: "Choose Project",
             choices: choices
@@ -149,9 +132,18 @@ function createProject() {
     // Create a new project in a chosen directory
 }
 function addProject() {
-    const directoryPath = getPath();
-    projects.push(directoryPath);
-    startUp();
+    return __awaiter(this, void 0, void 0, function* () {
+        const directoryPath = getPath();
+        const name = yield (0, prompts_1.input)({ message: "Enter the name of your project" });
+        const data = {
+            name: name,
+            path: directoryPath
+        };
+        const obj = getJSON();
+        obj.projects.push(data);
+        setJSON(obj);
+        startUp();
+    });
 }
 function getPath() {
     try {
@@ -172,8 +164,22 @@ function getPath() {
 }
 function initialiseHive() {
     return __awaiter(this, void 0, void 0, function* () {
+        const myObject = getJSON();
+        menuChoices = myObject.myObject.menuChoices;
+        projects = myObject.myObject.projects;
     });
 }
-startUp();
+function getJSON() {
+    var data = fs.readFileSync("data.json");
+    var myObject = JSON.parse(data);
+    return myObject;
+}
+function setJSON(myObject) {
+    // STRINGIFY OBJECT 
+    const jsonObj = JSON.stringify({ myObject }, null, 2);
+    fs.writeFileSync('data.json', jsonObj, 'utf8');
+    // WRITE TO FILE 
+}
 initialiseHive();
+startUp();
 //# sourceMappingURL=index.js.map
