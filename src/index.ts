@@ -143,7 +143,10 @@ async function viewProjects() {
     const answer = await select({
             message: "Choose Project",
             choices: choices
-        });     
+        });
+    
+      
+    console.log(answer);
         
     // Add each project as a choice in a list 
 

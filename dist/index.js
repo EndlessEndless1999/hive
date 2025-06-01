@@ -123,6 +123,7 @@ function viewProjects() {
             message: "Choose Project",
             choices: choices
         });
+        console.log(answer);
         // Add each project as a choice in a list 
         // Display a list of currently stored projects 
         // Be able to choose one to open 
