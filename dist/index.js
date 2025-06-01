@@ -121,26 +121,39 @@ function executeOption(result) {
     }
 }
 function viewProjects() {
-    if (projects.length == 0) {
-        console.log("You haven't defined any projects.");
-        startUp();
-        return;
-    }
-    let choices = [];
-    for (let i = 0; i > projects.length; i++) {
-        choices.push({
-            "name": `Project ${i}`,
-            "value": i
+    return __awaiter(this, void 0, void 0, function* () {
+        if (projects.length == 0) {
+            console.log("You haven't defined any projects.");
+            startUp();
+            return;
+        }
+        let choices = [];
+        for (let i = 0; i < projects.length; i++) {
+            choices.push({
+                name: `Project ${i}`,
+                value: i,
+                description: 'Continue Working on a Project'
+            });
+        }
+        console.log(choices);
+        const answer = yield (0, prompts_1.select)({
+            message: "Choose Project",
+            choices: choices
         });
-    }
-    // Add each project as a choice in a list 
-    // Display a list of currently stored projects 
-    // Be able to choose one to open 
+        // Add each project as a choice in a list 
+        // Display a list of currently stored projects 
+        // Be able to choose one to open 
+    });
 }
 function createProject() {
-    // Create a new project in a chosen directory 
+    // Create a new project in a chosen directory
 }
 function addProject() {
+    const directoryPath = getPath();
+    projects.push(directoryPath);
+    startUp();
+}
+function getPath() {
     try {
         const script = `
       set chosenFolder to POSIX path of (choose folder with prompt "Select a directory")
@@ -149,7 +162,6 @@ function addProject() {
         const result = execSync(`osascript -e '${script}'`, { encoding: 'utf8' });
         const directoryPath = result.trim();
         console.log("Selected directory:", directoryPath);
-        projects.push(directoryPath);
         return directoryPath;
     }
     catch (error) {

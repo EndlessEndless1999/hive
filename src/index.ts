@@ -141,19 +141,26 @@ function executeOption(result: any) {
 
 }
 
-function viewProjects() {
+async function viewProjects() {
     if (projects.length == 0) {
         console.log("You haven't defined any projects.")
         startUp();
         return 
     }
     let choices = [];
-    for (let i = 0; i > projects.length; i++) {
+    for (let i = 0; i < projects.length; i++) {
         choices.push({
-            "name": `Project ${i}`,
-            "value": i
+            name: `Project ${i}`,
+            value: i,
+            description: 'Continue Working on a Project'
         })
     }
+
+    const answer = await select({
+            message: "Choose Project",
+            choices: choices
+        });     
+        
     // Add each project as a choice in a list 
 
 
@@ -165,11 +172,20 @@ function viewProjects() {
 }
 
 function createProject() {
-    // Create a new project in a chosen directory 
+    // Create a new project in a chosen directory
+
 
 }
 
 function addProject() {
+    const directoryPath = getPath();
+
+    projects.push(directoryPath);
+
+    startUp();
+}
+
+function getPath() {
   try {
 
     const script = `
@@ -181,7 +197,7 @@ function addProject() {
     const directoryPath = result.trim();
     console.log("Selected directory:", directoryPath);
 
-    projects.push(directoryPath);
+    
 
 
     return directoryPath;
