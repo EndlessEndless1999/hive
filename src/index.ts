@@ -33,7 +33,7 @@ const options = program.opts();
 console.log(figlet.textSync("Hive - Audio Cave"));
 
 
-let projects = [];
+let projects: string | any[] = [];
 
 // In the first line, we import the Figlet module. 
 // Next, we invoke the figlet.textSync() method with the string Dir Manager as the argument 
@@ -134,9 +134,9 @@ async function viewProjects() {
     let choices = [];
     for (let i = 0; i < projects.length; i++) {
         choices.push({
-            name: `Project ${i}`,
+            name: projects[i].name,
             value: i,
-            description: 'Continue Working on a Project'
+            description: `Continue Working on ${projects[i].name}`
         })
     }
 
@@ -145,8 +145,18 @@ async function viewProjects() {
             choices: choices
         });
     
-      
-    console.log(answer);
+
+    let answerObj = {
+      name : projects[answer].name,
+      path : projects[answer].path
+    }
+
+    // Create new Choice List with Options + Pass Answer + FilePath of 
+
+
+    projectMenu(answerObj)
+
+
         
     // Add each project as a choice in a list 
 
@@ -156,6 +166,19 @@ async function viewProjects() {
     // Be able to choose one to open 
 
 
+}
+
+async function projectMenu(project: Object) {
+  console.log(project)
+
+  // Change menu choices to 
+  const answer = await select({
+          message: "Choose Project",
+          choices: menuChoices
+      });
+
+  console.log(answer)
+  
 }
 
 function createProject() {

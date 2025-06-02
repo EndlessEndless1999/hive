@@ -114,19 +114,35 @@ function viewProjects() {
         let choices = [];
         for (let i = 0; i < projects.length; i++) {
             choices.push({
-                name: `Project ${i}`,
+                name: projects[i].name,
                 value: i,
-                description: 'Continue Working on a Project'
+                description: `Continue Working on ${projects[i].name}`
             });
         }
         const answer = yield (0, prompts_1.select)({
             message: "Choose Project",
             choices: choices
         });
-        console.log(answer);
+        let answerObj = {
+            name: projects[answer].name,
+            path: projects[answer].path
+        };
+        // Create new Choice List with Options + Pass Answer + FilePath of 
+        projectMenu(answerObj);
         // Add each project as a choice in a list 
         // Display a list of currently stored projects 
         // Be able to choose one to open 
+    });
+}
+function projectMenu(project) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log(project);
+        // Change menu choices to 
+        const answer = yield (0, prompts_1.select)({
+            message: "Choose Project",
+            choices: menuChoices
+        });
+        console.log(answer);
     });
 }
 function createProject() {
