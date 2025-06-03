@@ -16,7 +16,7 @@ const fs = require("fs");
 // FileSystem
 const path = require("path");
 // Path 
-const { execSync } = require('child_process');
+const { execSync, exec } = require('child_process');
 // For getting filepaths
 const prompts_1 = require("@inquirer/prompts");
 const program = new Command();
@@ -125,7 +125,8 @@ function viewProjects() {
         });
         let answerObj = {
             name: projects[answer].name,
-            path: projects[answer].path
+            path: projects[answer].path,
+            tracks: projects[answer].tracks
         };
         // Create new Choice List with Options + Pass Answer + FilePath of 
         projectMenu(answerObj);
@@ -139,22 +140,137 @@ function projectMenu(project) {
         console.log(project);
         // Change menu choices to 
         const answer = yield (0, prompts_1.select)({
-            message: "Choose Project",
-            choices: menuChoices
+            message: `Currently viewing options for ${project.name}`,
+            choices: [
+                {
+                    name: "AddTrack",
+                    value: 0,
+                    description: "Add track to project"
+                },
+                {
+                    name: "ViewTracks",
+                    value: 1,
+                    description: "View tracks in project"
+                },
+                {
+                    name: "CreateTrack",
+                    value: 2,
+                    description: "Create a New Track"
+                },
+                {
+                    name: "GetData",
+                    value: 3,
+                    description: "View data about project"
+                }
+            ]
         });
         console.log(answer);
+        switch (answer) {
+            case 0:
+                addTrack(project);
+                break;
+            case 1:
+                viewTracks(project);
+                break;
+            case 2:
+                createTrack(project);
+                break;
+            case 3:
+                getData(project);
+                break;
+        }
     });
+}
+function addTrack(project) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // Use Get Path to get file to be added to the project object
+        // Instantiate New Track Object and add it to the project
+        // Return to project menu 
+        const filePath = getFilePath();
+        if (filePath != null) {
+            const trackName = yield (0, prompts_1.input)({ message: "Enter the name of your track." });
+            const track = {
+                name: trackName,
+                path: filePath
+            };
+            // Add Track to Tracks Array in Project Object 
+            project.tracks.push(track);
+            console.log(project.tracks);
+            // Save Changes to the JSON 
+        }
+    });
+}
+function viewTracks(project) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log(project);
+        let choices = [];
+        for (let i = 0; i < project.tracks.length; i++) {
+            const track = {
+                name: project.tracks[i].name,
+                value: project.tracks[i].path
+            };
+            choices.push(track);
+        }
+        // Display a list of all tracks in the project
+        const answer = yield (0, prompts_1.select)({
+            message: "Choose a Track to Work On.",
+            choices: choices
+        });
+        openFile(answer);
+        // Display Data for each one 
+        // Pressing Enter will open one of these projects and close hive
+        return answer;
+    });
+}
+function openFile(filePath) {
+    const fullPath = path.resolve(filePath);
+    const platform = process.platform;
+    let command;
+    if (platform === 'darwin') {
+        // macOS
+        command = `open "${fullPath}"`;
+    }
+    else if (platform === 'win32') {
+        // Windows
+        command = `start "" "${fullPath}"`;
+    }
+    else if (platform === 'linux') {
+        // Linux (might depend on desktop environment)
+        command = `xdg-open "${fullPath}"`;
+    }
+    else {
+        throw new Error('Unsupported platform: ' + platform);
+    }
+    exec(command, (err) => {
+        if (err) {
+            console.error('Failed to open file:', err);
+        }
+        else {
+            console.log('File opened:', fullPath);
+        }
+    });
+}
+function createTrack(project) {
+    // Get file path of project
+    // Create New directory with name via text input 
+    // Create new als file in that directory
+    // Go back to project menu 
+}
+function getData(project) {
+    // Get Metadata about project
+    return;
 }
 function createProject() {
     // Create a new project in a chosen directory
 }
 function addProject() {
     return __awaiter(this, void 0, void 0, function* () {
-        const directoryPath = getPath();
+        const directoryPath = getDirectoryPath();
         const name = yield (0, prompts_1.input)({ message: "Enter the name of your project" });
         const data = {
             name: name,
-            path: directoryPath
+            path: directoryPath,
+            tracks: []
         };
         const obj = getJSON();
         obj.projects.push(data);
@@ -162,7 +278,7 @@ function addProject() {
         startUp();
     });
 }
-function getPath() {
+function getDirectoryPath() {
     try {
         const script = `
       set chosenFolder to POSIX path of (choose folder with prompt "Select a directory")
@@ -178,6 +294,19 @@ function getPath() {
         return null;
     }
     // uses apple script to open a dialog box to select a directory
+}
+function getFilePath() {
+    try {
+        const script = 'set chosenFile to POSIX path of (choose file with prompt "Select a file")';
+        const result = execSync(`osascript -e '${script}' -e 'return chosenFile'`, { encoding: 'utf8' });
+        const filePath = result.trim();
+        console.log("Selected file:", filePath);
+        return filePath;
+    }
+    catch (error) {
+        console.error("File selection canceled or failed:");
+        return null;
+    }
 }
 function initialiseHive() {
     return __awaiter(this, void 0, void 0, function* () {
