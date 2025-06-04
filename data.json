@@ -1,35 +1,41 @@
 {
-  "myObject": {
-    "menuChoices": [
-      {
-        "name": "Select Project",
-        "value": 0,
-        "description": "Continue Working on a Project"
-      },
-      {
-        "name": "Create Project",
-        "value": 1,
-        "description": "Start a New Project"
-      },
-      {
-        "name": "Add Project",
-        "value": 2,
-        "description": "Add Existing Project to Hive"
-      }
-    ],
-    "projects": [
-      {
-        "name": "Album 1",
-        "path": "/Users/charkie/Desktop/New_Music/",
-        "tracks": [
-            {
+  "menuChoices": [
+    {
+      "name": "Select Project",
+      "value": 0,
+      "description": "Continue Working on a Project"
+    },
+    {
+      "name": "Create Project",
+      "value": 1,
+      "description": "Start a New Project"
+    },
+    {
+      "name": "Add Project",
+      "value": 2,
+      "description": "Add Existing Project to Hive"
+    }
+  ],
+  "projects": [
+    {
+      "name": "Album 1",
+      "path": "/Users/charkie/Desktop/New_Music/",
+      "tracks": [
+        {
           "name": "Dinosaur",
-          "path" : "/Users/charkie/Desktop/New_Music/Dinosaur /Dinosaur  Project/Dinosaur .als"
-          }
-        ]
-      }
-    ],
-    "tracks": [],
-    "settings": []
-  }
+          "path": "/Users/charkie/Desktop/New_Music/Dinosaur /Dinosaur  Project/Dinosaur .als"
+        },
+        {
+          "name": "Bracelet",
+          "path": "/Users/charkie/Desktop/New_Music/Bracelet/Bracelet Project/Bracelet Nostalgia.als"
+        },
+        {
+          "name": "Hunger",
+          "path": "/Users/charkie/Desktop/New_Music/Hunger/Hunger Project/Hunger.als"
+        }
+      ]
+    }
+  ],
+  "tracks": [],
+  "settings": []
 }

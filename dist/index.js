@@ -26,10 +26,26 @@ program
     .option("-l, --ls  [value]", "List directory contents")
     .option("-m, --mkdir <value>", "Create a directory")
     .option("-t, --touch <value>", "Create a file")
+    .option("-o, --open <value>", "Open a File")
     .parse(process.argv);
 const options = program.opts();
 // Gets options from command object 
 // Defines Options, Versions
+if (options.ls) {
+    const filepath = typeof options.ls === "string" ? options.ls : __dirname;
+    listDirContents(filepath);
+}
+if (options.mkdir) {
+    createDir(path.resolve(__dirname, options.mkdir));
+}
+if (options.touch) {
+    createFile(path.resolve(__dirname, options.touch));
+}
+if (options.open) {
+    // Get Path from name of track/file
+    // Open File
+    // Return from program
+}
 console.log(figlet.textSync("Hive - Audio Cave"));
 let projects = [];
 // In the first line, we import the Figlet module. 
@@ -73,16 +89,6 @@ function displayMenu(choices, message) {
     });
 }
 let menuChoices;
-if (options.ls) {
-    const filepath = typeof options.ls === "string" ? options.ls : __dirname;
-    listDirContents(filepath);
-}
-if (options.mkdir) {
-    createDir(path.resolve(__dirname, options.mkdir));
-}
-if (options.touch) {
-    createFile(path.resolve(__dirname, options.touch));
-}
 function startUp() {
     return __awaiter(this, void 0, void 0, function* () {
         if (!process.argv.slice(2).length) {
@@ -126,7 +132,8 @@ function viewProjects() {
         let answerObj = {
             name: projects[answer].name,
             path: projects[answer].path,
-            tracks: projects[answer].tracks
+            tracks: projects[answer].tracks,
+            index: answer
         };
         // Create new Choice List with Options + Pass Answer + FilePath of 
         projectMenu(answerObj);
@@ -193,9 +200,9 @@ function addTrack(project) {
                 name: trackName,
                 path: filePath
             };
-            // Add Track to Tracks Array in Project Object 
-            project.tracks.push(track);
-            console.log(project.tracks);
+            const data = getJSON();
+            data.projects[project.index].tracks.push(track);
+            setJSON(data);
             // Save Changes to the JSON 
         }
     });
@@ -311,8 +318,8 @@ function getFilePath() {
 function initialiseHive() {
     return __awaiter(this, void 0, void 0, function* () {
         const myObject = getJSON();
-        menuChoices = myObject.myObject.menuChoices;
-        projects = myObject.myObject.projects;
+        menuChoices = myObject.menuChoices;
+        projects = myObject.projects;
     });
 }
 function getJSON() {
@@ -322,7 +329,7 @@ function getJSON() {
 }
 function setJSON(myObject) {
     // STRINGIFY OBJECT 
-    const jsonObj = JSON.stringify({ myObject }, null, 2);
+    const jsonObj = JSON.stringify(myObject, null, 2);
     fs.writeFileSync('data.json', jsonObj, 'utf8');
     // WRITE TO FILE 
 }

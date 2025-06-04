@@ -22,12 +22,35 @@ program
   .option("-l, --ls  [value]", "List directory contents")
   .option("-m, --mkdir <value>", "Create a directory")
   .option("-t, --touch <value>", "Create a file")
+  .option("-o, --open <value>", "Open a File")
   .parse(process.argv);
 
 const options = program.opts();
 // Gets options from command object 
 
 // Defines Options, Versions
+
+if (options.ls) {
+  const filepath = typeof options.ls === "string" ? options.ls : __dirname;
+  listDirContents(filepath);
+}
+
+
+if (options.mkdir) {
+  createDir(path.resolve(__dirname, options.mkdir));
+}
+
+if (options.touch) {
+  createFile(path.resolve(__dirname, options.touch));
+}
+
+if (options.open) {
+  // Get Path from name of track/file
+
+  // Open File
+
+  // Return from program
+}
 
 
 console.log(figlet.textSync("Hive - Audio Cave"));
@@ -85,19 +108,7 @@ async function displayMenu(choices: any, message: string){
 let menuChoices: any;
 
 
-if (options.ls) {
-  const filepath = typeof options.ls === "string" ? options.ls : __dirname;
-  listDirContents(filepath);
-}
 
-
-if (options.mkdir) {
-  createDir(path.resolve(__dirname, options.mkdir));
-}
-
-if (options.touch) {
-  createFile(path.resolve(__dirname, options.touch));
-}
 
 async function startUp() {
     if (!process.argv.slice(2).length) {
@@ -149,7 +160,8 @@ async function viewProjects() {
     let answerObj = {
       name : projects[answer].name,
       path : projects[answer].path,
-      tracks : projects[answer].tracks
+      tracks : projects[answer].tracks,
+      index : answer
     }
 
     // Create new Choice List with Options + Pass Answer + FilePath of 
@@ -169,7 +181,7 @@ async function viewProjects() {
 
 }
 
-async function projectMenu(project: { name: any; path?: any; tracks: [{}] }) {
+async function projectMenu(project: { name: any; path?: any; tracks: [{}], index: number }) {
   console.log(project)
 
   // Change menu choices to 
@@ -221,7 +233,7 @@ async function projectMenu(project: { name: any; path?: any; tracks: [{}] }) {
   
 }
 
-async function addTrack(project: { name: any; path?: any; tracks: [{}]}) {
+async function addTrack(project: { name: any; path?: any; tracks: [{}], index: number}) {
   // Use Get Path to get file to be added to the project object
   // Instantiate New Track Object and add it to the project
   // Return to project menu 
@@ -234,12 +246,15 @@ async function addTrack(project: { name: any; path?: any; tracks: [{}]}) {
       path: filePath
     }
 
-    // Add Track to Tracks Array in Project Object 
 
-    project.tracks.push(track);
+    const data = getJSON();
 
 
-    console.log(project.tracks)
+    data.projects[project.index].tracks.push(track);
+
+    setJSON(data);
+
+
 
     // Save Changes to the JSON 
 
@@ -397,8 +412,8 @@ async function initialiseHive() {
   
   const myObject = getJSON();
 
-  menuChoices = myObject.myObject.menuChoices;
-  projects = myObject.myObject.projects;
+  menuChoices = myObject.menuChoices;
+  projects = myObject.projects;
 
 
 }
@@ -412,7 +427,7 @@ function getJSON() {
 
 function setJSON(myObject: any) {
   // STRINGIFY OBJECT 
-  const jsonObj = JSON.stringify({myObject}, null, 2);
+  const jsonObj = JSON.stringify(myObject, null, 2);
 
   fs.writeFileSync('data.json', jsonObj, 'utf8');
 
