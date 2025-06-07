@@ -41,10 +41,26 @@ if (options.mkdir) {
 if (options.touch) {
     createFile(path.resolve(__dirname, options.touch));
 }
-if (options.open) {
-    // Get Path from name of track/file
-    // Open File
-    // Return from program
+try {
+    const entry = options.open.trim(); // trim user input
+    console.log("Looking for entry:", entry);
+    const data = getJSON();
+    for (let i = 0; i < data.projects.length; i++) {
+        const tracks = data.projects[i].tracks;
+        for (let k = 0; k < tracks.length; k++) {
+            const track = tracks[k];
+            const trackName = track.name.trim(); // normalize JSON value
+            console.log(`Checking track: '${trackName}'`);
+            if (entry === trackName) {
+                console.log("Match found! Opening:", track.path);
+                openFile(track.path);
+            }
+        }
+    }
+    console.log("No matching track found.");
+}
+catch (error) {
+    console.error("Error during file open:", error);
 }
 console.log(figlet.textSync("Hive - Audio Cave"));
 let projects = [];

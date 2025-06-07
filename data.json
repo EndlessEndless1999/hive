@@ -22,16 +22,24 @@
       "path": "/Users/charkie/Desktop/New_Music/",
       "tracks": [
         {
-          "name": "Dinosaur",
-          "path": "/Users/charkie/Desktop/New_Music/Dinosaur /Dinosaur  Project/Dinosaur .als"
-        },
-        {
           "name": "Bracelet",
           "path": "/Users/charkie/Desktop/New_Music/Bracelet/Bracelet Project/Bracelet Nostalgia.als"
         },
         {
+          "name": "Dinosaur",
+          "path": "/Users/charkie/Desktop/New_Music/Dinosaur /Dinosaur  Project/Dinosaur .als"
+        },
+        {
           "name": "Hunger",
           "path": "/Users/charkie/Desktop/New_Music/Hunger/Hunger Project/Hunger.als"
+        },
+        {
+          "name": "Memories of the Sea",
+          "path": "/Users/charkie/Desktop/New_Music/Memories of Sea/Memories of Sea Project/Memories of Sea.als"
+        },
+        {
+          "name": "Cave Rocks",
+          "path": "/Users/charkie/Desktop/New_Music/Cave Rocks/Cave Rocks  Project/Cave Rocks .als"
         }
       ]
     }
