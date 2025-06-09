@@ -112,6 +112,9 @@ function createDir(filepath: string) {
     fs.mkdirSync(filepath);
     console.log("The directory has been created successfully");
   }
+  else {
+    console.log("Folder not created" + " " + filepath)
+  }
 }
 
 function createFile(filepath: string) {
@@ -342,11 +345,30 @@ function openFile(filePath: string) {
   });
 }
 
-function createTrack(project: { name: any; path?: any; }) {
+async function createTrack(project: { name: any; path?: any; index: any}) {
   // Get file path of project
+
+  const name = await input({message: "Enter the name of your track."})
+  
   // Create New directory with name via text input 
+
+  createDir(project.path + name)
   // Create new als file in that directory
-  // Go back to project menu 
+  createFile(project.path + name + "/" + name + ".als")
+
+  const track = {
+    name: name,
+    path: project.path + name + "/" + name + ".als"
+  }
+
+
+  const data = await getJSON();
+
+  data.projects[project.index].tracks.push(track)
+
+  setJSON(data);
+
+  // Push to persistent data
   
 }
 
@@ -355,8 +377,32 @@ function getData(project: { name: any; path?: any; }) {
   return
 }
 
-function createProject() {
+async function createProject() {
     // Create a new project in a chosen directory
+    console.log("Choose where you want the new project to go.")
+    const path = getDirectoryPath();
+
+    console.log("Enter the name of your project");
+
+    const name = await input({message: "Enter the name of your new project."})
+
+    createDir(path + name);
+
+    const project = {
+      name: name,
+      path: path + name + "/",
+      tracks: []
+    }
+
+    const data = await getJSON()
+
+    data.projects.push(project)
+
+    setJSON(data);
+
+
+
+
 
 
 }

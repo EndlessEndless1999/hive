@@ -54,6 +54,8 @@ try {
             if (entry === trackName) {
                 console.log("Match found! Opening:", track.path);
                 openFile(track.path);
+                /// THIS DOESN'T EXIT THE FOR LOOP WHEN IT FINDS THE TRACK
+                /// EXTRACT IT INTO A FUNCTION
             }
         }
     }
@@ -89,6 +91,9 @@ function createDir(filepath) {
     if (!fs.existsSync(filepath)) {
         fs.mkdirSync(filepath);
         console.log("The directory has been created successfully");
+    }
+    else {
+        console.log("Folder not created" + " " + filepath);
     }
 }
 function createFile(filepath) {
@@ -274,17 +279,44 @@ function openFile(filePath) {
     });
 }
 function createTrack(project) {
-    // Get file path of project
-    // Create New directory with name via text input 
-    // Create new als file in that directory
-    // Go back to project menu 
+    return __awaiter(this, void 0, void 0, function* () {
+        // Get file path of project
+        const name = yield (0, prompts_1.input)({ message: "Enter the name of your track." });
+        // Create New directory with name via text input 
+        createDir(project.path + name);
+        // Create new als file in that directory
+        createFile(project.path + name + "/" + name + ".als");
+        const track = {
+            name: name,
+            path: project.path + name + "/" + name + ".als"
+        };
+        const data = yield getJSON();
+        data.projects[project.index].tracks.push(track);
+        setJSON(data);
+        // Push to persistent data
+    });
 }
 function getData(project) {
     // Get Metadata about project
     return;
 }
 function createProject() {
-    // Create a new project in a chosen directory
+    return __awaiter(this, void 0, void 0, function* () {
+        // Create a new project in a chosen directory
+        console.log("Choose where you want the new project to go.");
+        const path = getDirectoryPath();
+        console.log("Enter the name of your project");
+        const name = yield (0, prompts_1.input)({ message: "Enter the name of your new project." });
+        createDir(path + name);
+        const project = {
+            name: name,
+            path: path + name + "/",
+            tracks: []
+        };
+        const data = yield getJSON();
+        data.projects.push(project);
+        setJSON(data);
+    });
 }
 function addProject() {
     return __awaiter(this, void 0, void 0, function* () {

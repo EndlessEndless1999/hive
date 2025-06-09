@@ -18,6 +18,7 @@
   ],
   "projects": [
     {
+      "index": 0,
       "name": "Album 1",
       "path": "/Users/charkie/Desktop/New_Music/",
       "tracks": [
