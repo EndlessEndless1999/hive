@@ -62,6 +62,9 @@ try {
       if (entry === trackName) {
         console.log("Match found! Opening:", track.path);
         openFile(track.path);
+
+        /// THIS DOESN'T EXIT THE FOR LOOP WHEN IT FINDS THE TRACK
+        /// EXTRACT IT INTO A FUNCTION
       }
     }
   }
